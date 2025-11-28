@@ -29,7 +29,7 @@ class RegisterView(APIView):
             email=email,
             phone=phone,
             password=password,
-            is_active=True  # foydalanuvchi aktiv
+            is_active=True
         )
 
         code = ''.join([str(random.randint(0, 9)) for _ in range(6)])

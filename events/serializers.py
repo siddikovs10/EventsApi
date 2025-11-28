@@ -49,7 +49,7 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all())  # ✅ Queryset qo'shildi
+    event = serializers.PrimaryKeyRelatedField(queryset=Event.objects.all())
     owner = serializers.StringRelatedField(read_only=True)
 
     class Meta:
