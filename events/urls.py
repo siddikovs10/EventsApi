@@ -4,7 +4,7 @@ from .views import (
     EventListCreateView, EventDetailView,
     TicketListCreateView, TicketDetailView,
     BookingListCreateView, BookingDetailView,
-    ResendCodeView,
+    ResendCodeView
 )
 
 urlpatterns = [

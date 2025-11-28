@@ -1,24 +1,41 @@
 from rest_framework import generics, permissions
+
+from events.models import Event
+from events.serializers import EventSerializer
+from events.permissions import IsEventOrganizer
+
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from django.db.models import Q
-
-from ..models import Event
-from ..serializers import EventSerializer
-from ..permissions import IsEventOrganizer
-
-
+from drf_spectacular.utils import extend_schema, OpenApiParameter
+    
+    
 class EventListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = EventSerializer
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("category", description="Filter by category id", required=False, type=int),
+            OpenApiParameter("search", description="Search by title or description", required=False, type=str),
+        ]
+    )
 
-    def get_queryset(self):
-        queryset = Event.objects.all()
-        search_query = self.request.query_params.get('search', '')
-        if search_query:
-            queryset = queryset.filter(
-                Q(title__icontains=search_query) | 
-                Q(description__icontains=search_query)
-            )
-        return queryset
+    def get(self, request):
+        user = request.user
+        category_id = request.GET.get('category')
+        search = request.GET.get('search')
+
+        events = Event.objects.all()
+
+        if category_id:
+            events = events.filter(category_id=category_id)
+
+        if search:
+            events = events.filter(Q(title__icontains=search) | Q(description__icontains=search))
+
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data)
 
     def perform_create(self, serializer):
         serializer.save(organizer=self.request.user)
