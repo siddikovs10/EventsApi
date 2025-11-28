@@ -1,0 +1,16 @@
+# Python fayllari
+*.pyc
+__pycache__/
+
+# Virtual muhit
+venv/
+
+# Log fayllar
+*.log
+
+# Maxfiy fayl
+.env
+
+# IDE fayllari
+.vscode/
+.idea/
